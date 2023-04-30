@@ -1,4 +1,4 @@
-package uz.avaz.security.config;
+package uz.avaz.security.jwt_security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -23,6 +23,12 @@ public class JwtService {
     @Value("${application.security.jwt.secret-key}")
     private  String secretKey ;
 
+    @Value("${application.security.jwt.expiration}")
+    private Long jwtExpiration;
+    @Value("${application.security.jwt.expiration}")
+    private Long refreshExpiration;
+
+
 
     //1
     public String extractUsername(String token) {
@@ -45,12 +51,21 @@ public class JwtService {
     public String generateToken(
             Map<String, Objects> extractClaims,
             UserDetails userDetails) {
+        return buildToken(extractClaims,userDetails,jwtExpiration);
+    }
+
+    public String generateRefreshToken(UserDetails userDetails){
+        return buildToken(new HashMap<>(),userDetails,refreshExpiration);
+    }
+    private String buildToken(Map<String, Objects> extractClaims,
+                              UserDetails userDetails,
+                              Long jwtExpiration) {
         return Jwts
                 .builder()
                 .setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 36000000))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

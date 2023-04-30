@@ -1,4 +1,4 @@
-package uz.avaz.security.config;
+package uz.avaz.security.jwt_security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

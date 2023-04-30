@@ -1,24 +1,29 @@
-package uz.avaz.security.auth;
+package uz.avaz.security.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import uz.avaz.security.ApiResponse;
+import uz.avaz.security.dto.AuthenticationRequestDto;
+import uz.avaz.security.dto.RegisterRequestDto;
+import uz.avaz.security.service.AuthService;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthenticationService authenticationService;
+    private final AuthService authenticationService;
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse>  register(@RequestBody RegisterRequest request){
-        return ResponseEntity.ok(authenticationService.register(request));
+    public ResponseEntity<?>  register(@RequestBody RegisterRequestDto request){
+        return ApiResponse.controller(authenticationService.register(request));
     }
     @PostMapping("/authentication")
-    public ResponseEntity<AuthenticationResponse>  register(@RequestBody AuthenticationRequest request){
-    return ResponseEntity.ok(authenticationService.authenticate(request));
+    public ResponseEntity<?>  register(@RequestBody AuthenticationRequestDto request){
+    return ApiResponse.controller(authenticationService.authenticate(request));
+    }
+    @DeleteMapping("/logout/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id){
+        return ApiResponse.controller(authenticationService.logout(id));
     }
 }
 
